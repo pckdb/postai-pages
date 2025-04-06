@@ -1,0 +1,44 @@
+<!-- verify.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vérification en cours...</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 80px;
+      color: #333;
+    }
+    #status {
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 Vérification en cours...</h1>
+  <div id="status">Patiente un instant...</div>
+
+  <script>
+    const FRONTEND_URL = "https://app.tonsite.com"; // ⬆️ modifiable facilement ici
+    const token = new URLSearchParams(location.search).get('token');
+
+    if (!token) {
+      document.getElementById('status').textContent = "❌ Aucun token fourni.";
+    } else {
+      fetch(`${FRONTEND_URL.replace('app.', 'api.')}/auth/verify-email?token=${token}`)
+        .then(res => res.ok ? "✅ Email vérifié avec succès !" : "❌ Lien invalide ou expiré.")
+        .then(message => {
+          document.getElementById('status').textContent = message;
+          setTimeout(() => window.location.href = FRONTEND_URL + "/login", 4000);
+        })
+        .catch(() => {
+          document.getElementById('status').textContent = "❌ Erreur de connexion.";
+        });
+    }
+  </script>
+</body>
+</html>
